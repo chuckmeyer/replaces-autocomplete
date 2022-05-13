@@ -1,0 +1,23 @@
+{
+  "name": "multi-column-autocomplete",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel src/index.html",
+    "build": "parcel build src/index.html",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@algolia/autocomplete-js": "^1.6.2",
+    "@algolia/autocomplete-plugin-recent-searches": "^1.6.2",
+    "@algolia/autocomplete-theme-classic": "^1.6.2",
+    "moment": "^2.29.3"
+  },
+  "devDependencies": {
+    "parcel": "^2.5.0"
+  }
+}
