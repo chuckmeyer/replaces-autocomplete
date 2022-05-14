@@ -1,66 +1,80 @@
 import { autocomplete, getAlgoliaResults } from '@algolia/autocomplete-js';
 import { createLocalStorageRecentSearchesPlugin } from '@algolia/autocomplete-plugin-recent-searches';
 import algoliasearch from 'algoliasearch/lite';
-import { ProductItem } from './components/ProductItem';
 import '@algolia/autocomplete-theme-classic';
 
 const appId = 'latency';
 const apiKey = '6be0576ff61c053d5f9a3225e2a90f76';
 const searchClient = algoliasearch(appId, apiKey);
-
 const recentSearchesPlugin = createLocalStorageRecentSearchesPlugin({
   key: 'multi-column-layout-example',
   limit: 3,
 });
 
+function cx(...classNames) {
+  return classNames.filter(Boolean).join(' ');
+}
+
 autocomplete({
-	debug: true,
+  debug: true,
   container: '#autocomplete',
   placeholder: 'Search for address',
-	openOnFocus: true,
+  openOnFocus: true,
   plugins: [recentSearchesPlugin],
   getSources({ query }) {
-    return [
-			{
-				sourceId: 'products',
-				getItems() {
-					return getAlgoliaResults({
-						searchClient,
-						queries: [
-							{
-								indexName: 'autocomplete_demo_products',
-								query,
-								params: {
-									hitsPerPage: 4,
-								},
-							},
-						],
-					});
+    return fetch(
+      `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?proximity=ip&types=place%2Cpostcode%2Caddress&access_token=pk.eyJ1IjoiY2h1Y2ttZXllciIsImEiOiJja3lkZ3hybHcwNW1qMm9xaGNxa3E1eDMwIn0._XpQJ45rdsyPQoWRCRparg`
+    )
+    .then((response) => response.json())
+    .then(({ features }) => {
+      return [
+        {
+          sourceId: 'features',
+          templates: {
+            item({ html, item, components }) {
+              return html`
+								<a
+									href="https://www.google.com/maps/search/?api=1&query=${item.center[1]}%2C${item.center[0]}"
+									target="_blank"
+									rel="noreferrer noopener"
+									class="${cx('aa-ItemLink', item.id)}"
+								>
+      						<div class="aa-ItemContent">
+        						<div class="aa-ItemContentBody">
+            					<div class="aa-ItemContentTitleWrapper">
+              					<div class="aa-ItemContentTitle">
+													${item.place_name}
+              					</div>
+              			  </div>
+              			</div>
+              		</div>
+								</a>
+							`;
+            },
+          },
+          getItems() {
+            return features;
+          },
+//          getItemUrl({ item }) {
+//            return `https://www.google.com/maps/search/?api=1&query=${item.center[1]}%2C${item.center[0]}`;
+//          },
+          getItemInputValue({ item }) {
+            return item.place_name;
+          },
 				},
-				templates: {
-					item({ html, item, components }) {
-						return ProductItem({ html, hit: item, components });
-					},
-				},
-			},
-		];
+      ];
+    });
   },
-	render({ elements, render, html }, root) {
-		const { recentSearchesPlugin, products } = elements;
+  render({ elements, render, html }, root) {
+    const { recentSearchesPlugin, features} = elements;
 
-		render(
-			html`<div className="aa-PanelLayout aa-Panel--scrollable">
-				<div className="aa-PanelSections">
-					<div className="aa-PanelSection--left">
-						${recentSearchesPlugin}
-					</div>
-					<div className="aa-PanelSection--right">
-						${products}
-					</div>
-				</div>
-			</div>`,
-			root
-		);
-	},
+    render(
+      html`<div className="aa-PanelLayout aa-Panel--scrollable">
+        ${recentSearchesPlugin}
+        ${features}
+      </div>`,
+      root
+    );
+  },
 });
 
