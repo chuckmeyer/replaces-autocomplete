@@ -13,7 +13,13 @@ function cx(...classNames) {
 
 autocomplete({
   debug: true,
-  container: '#autocomplete',
+  onStateChange({ state }) {
+  	if (state.completion !== null) {
+			console.log(`Item selected: ${state.completion}`);
+			console.log(hit);
+		}
+  },
+	container: '#autocomplete',
   placeholder: 'Search for address',
   openOnFocus: true,
   plugins: [recentSearchesPlugin],
