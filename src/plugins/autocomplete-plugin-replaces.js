@@ -6,11 +6,11 @@ export function createReplacesMapboxPlugin(options) {
     onStateChange({ state }) {
       if (state.completion !== null) {
         console.log(`Item selected: ${state.completion}`);
+				console.log(state);
       }
     },
-    getSources({ query }) {
+    getSources({ query, setContext }) {
       // Options can come from: https://docs.mapbox.com/api/search/geocoding/#forward-geocoding
-			console.log(query);
 			if (!("access_token" in options)) {
 				console.log('access_token required for MapBox API');
 				return [
@@ -35,6 +35,9 @@ export function createReplacesMapboxPlugin(options) {
         return fetch(endpoint)
           .then((response) => response.json())
           .then(({ features }) => {
+            setContext({
+              mapBoxData: features,
+            });
             return [
               {
                 sourceId: 'features',
@@ -45,9 +48,9 @@ export function createReplacesMapboxPlugin(options) {
                   console.log(item);
                   return item.place_name;
                 },
-      //          getItemUrl({ item }) {
-      //            return `https://www.google.com/maps/search/?api=1&query=${item.center[1]}%2C${item.center[0]}`;
-      //          },
+                // getItemUrl({ item }) {
+                //   return `https://www.google.com/maps/search/?api=1&query=${item.center[1]}%2C${item.center[0]}`;
+                // },
                 templates: {
                   item({ html, item }) {
                     return html`
