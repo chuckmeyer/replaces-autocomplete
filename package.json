@@ -13,7 +13,8 @@
   "dependencies": {
     "@algolia/autocomplete-js": "^1.6.2",
     "@algolia/autocomplete-plugin-recent-searches": "^1.6.2",
-    "@algolia/autocomplete-theme-classic": "^1.6.2"
+    "@algolia/autocomplete-theme-classic": "^1.6.2",
+    "qs": "^6.10.3"
   },
   "devDependencies": {
     "eslint": "^8.15.0",
