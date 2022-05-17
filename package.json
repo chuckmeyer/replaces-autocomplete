@@ -16,6 +16,7 @@
     "@algolia/autocomplete-theme-classic": "^1.6.2"
   },
   "devDependencies": {
+    "eslint": "^8.15.0",
     "parcel": "^2.5.0"
   }
 }
